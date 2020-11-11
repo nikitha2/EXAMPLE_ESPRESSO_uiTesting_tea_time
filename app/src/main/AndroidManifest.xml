@@ -17,8 +17,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".OrderActivity"/>
-        <activity android:name=".OrderSummaryActivity"/>
+        <activity android:name=".OrderActivity"
+            android:parentActivityName=".MenuActivity"/>
+        <activity android:name=".OrderSummaryActivity"
+            android:parentActivityName=".OrderActivity"/>
     </application>
 
 </manifest>

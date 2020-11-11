@@ -33,7 +33,7 @@ public class OrderSummaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_summary);
         Toolbar menuToolbar = (Toolbar) findViewById(R.id.order_summary_toolbar);
-        setSupportActionBar(menuToolbar);
+//        setSupportActionBar(menuToolbar);
         getSupportActionBar().setTitle(getString(R.string.order_summary_title));
 
         Intent intent = getIntent();
@@ -105,15 +105,14 @@ public class OrderSummaryActivity extends AppCompatActivity {
         // Use an intent to launch an email app.
         // Send the order summary in the email body.
         Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_SUBJECT,
-                getString(R.string.order_summary_email_subject));
+        intent.setData(Uri.parse("mailto:abc@gmail.com")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.order_summary_email_subject));
         intent.putExtra(Intent.EXTRA_TEXT, emailMessage);
 
-        if (intent.resolveActivity(getPackageManager()) != null) {
+       // if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
 
-        }
+       // }
     }
 
 }
