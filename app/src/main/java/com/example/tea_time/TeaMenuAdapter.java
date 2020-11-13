@@ -73,4 +73,10 @@ public class TeaMenuAdapter extends ArrayAdapter<Tea> {
         return convertView;
     }
 
+    public void setData(ArrayList dataNew) {
+        data.clear();
+        data.addAll(dataNew);
+        notifyDataSetChanged();
+    }
+
 }

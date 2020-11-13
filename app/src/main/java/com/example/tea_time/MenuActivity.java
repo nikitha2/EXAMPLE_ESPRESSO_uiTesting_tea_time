@@ -22,16 +22,30 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.test.espresso.IdlingResource;
 
+import com.example.tea_time.IdlingResource.ImageDownloader;
+import com.example.tea_time.IdlingResource.SimpleIdlingResource;
 import com.example.tea_time.model.Tea;
 
 import java.util.ArrayList;
 
-public class MenuActivity extends AppCompatActivity {
-
+public class MenuActivity extends AppCompatActivity implements ImageDownloader.DelayerCallback {
     Intent mTeaIntent;
+    TeaMenuAdapter adapter;
+    // The Idling Resource which will be null in production.
+    @Nullable private SimpleIdlingResource mIdlingResource;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ImageDownloader.downloadImage(this,this,mIdlingResource);
+    }
 
     public final static String EXTRA_TEA_NAME = "com.example.android.teatime.EXTRA_TEA_NAME";
 
@@ -55,9 +69,12 @@ public class MenuActivity extends AppCompatActivity {
         // Create a {@link TeaAdapter}, whose data source is a list of {@link Tea}s.
         // The adapter know how to create grid items for each item in the list.
         GridView gridview = (GridView) findViewById(R.id.tea_grid_view);
-        TeaMenuAdapter adapter = new TeaMenuAdapter(this, R.layout.grid_item_layout, teas);
+        adapter = new TeaMenuAdapter(this, R.layout.grid_item_layout, new ArrayList());
         gridview.setAdapter(adapter);
-
+// need to create an instance of  mIdlingResource here as @Before runs after activity is created. if we need delay after activity is creates
+// we dont need line 76 as @Before in test IdlingResourceActivityTest will create an instance.
+        getIdlingResource();
+        ImageDownloader.downloadImage(this,this,mIdlingResource);
 
         // Set a click listener on that View
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,7 +90,25 @@ public class MenuActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
+
+
+
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
+    }
+
+    @Override
+    public void onDone(ArrayList<Tea> teas) {
+        adapter.setData(teas);
+    }
 }
